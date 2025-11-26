@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egg Fried Rice Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Top Title Bar -->
+        <header class="title-bar">
+            <h1>🍳 Egg Fried Rice Game 🍚</h1>
+        </header>
+
+        <div class="main-content">
+            <!-- Left Side: Kitchen Scene -->
+            <div class="kitchen-scene">
+                <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+                <!-- Interactive Elements Overlay -->
+                <div id="interactiveElements">
+                    <!-- Ingredients (Step 1) -->
+                    <div class="ingredient" id="egg" data-type="egg" style="left: 150px; top: 200px;">
+                        <div class="ingredient-icon">🥚</div>
+                    </div>
+                    <div class="ingredient" id="shallot" data-type="shallot" style="left: 250px; top: 200px;">
+                        <div class="ingredient-icon">🧅</div>
+                    </div>
+                    <div class="ingredient" id="rice" data-type="rice" style="left: 350px; top: 200px;">
+                        <div class="ingredient-icon">🍚</div>
+                    </div>
+                    <div class="ingredient" id="oil" data-type="oil" style="left: 450px; top: 200px;">
+                        <div class="ingredient-icon">🛢️</div>
+                    </div>
+
+                    <!-- Cutting Board (Step 2) -->
+                    <div id="cuttingBoard" class="interactive-area" style="display: none;">
+                        <div class="cutting-area">
+                            <div id="cutIndicator">Click to cut!</div>
+                            <div id="cutProgress">0/10</div>
+                        </div>
+                    </div>
+
+                    <!-- Wok Area (Steps 3-5) -->
+                    <div id="wokArea" class="interactive-area" style="display: none;">
+                        <div class="wok-container">
+                            <div id="stoveGlow" class="stove-glow"></div>
+                            <div id="wokContents" class="wok-contents"></div>
+                        </div>
+                    </div>
+
+                    <!-- Prep Tray -->
+                    <div id="prepTray" class="prep-tray">
+                        <div class="tray-label">Prep Tray</div>
+                        <div id="prepItems" class="prep-items"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Steps UI -->
+            <div class="steps-panel">
+                <div class="steps-container">
+                    <h2>Cooking Steps</h2>
+
+                    <!-- Step 1 -->
+                    <div class="step" id="step1" data-step="1">
+                        <div class="step-header">
+                            <span class="step-number">1</span>
+                            <span class="step-title">Take Ingredients</span>
+                        </div>
+                        <div class="step-content">
+                            <p>Click on: Egg, Shallot, Rice, Oil</p>
+                            <div class="step-progress" id="step1-progress">0/4 collected</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="step locked" id="step2" data-step="2">
+                        <div class="step-header">
+                            <span class="step-number">2</span>
+                            <span class="step-title">Cut Ingredients</span>
+                        </div>
+                        <div class="step-content">
+                            <p>Click repeatedly to chop the ingredients</p>
+                            <button class="action-btn" id="cutBtn" disabled>Start Cutting</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="step locked" id="step3" data-step="3">
+                        <div class="step-header">
+                            <span class="step-number">3</span>
+                            <span class="step-title">Heat the Wok</span>
+                        </div>
+                        <div class="step-content">
+                            <p>Turn on the stove to heat the wok</p>
+                            <button class="action-btn" id="heatBtn" disabled>Turn on Stove</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="step locked" id="step4" data-step="4">
+                        <div class="step-header">
+                            <span class="step-number">4</span>
+                            <span class="step-title">Add Oil</span>
+                        </div>
+                        <div class="step-content">
+                            <p>Pour oil into the heated wok</p>
+                            <button class="action-btn" id="oilBtn" disabled>Add Oil</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="step locked" id="step5" data-step="5">
+                        <div class="step-header">
+                            <span class="step-number">5</span>
+                            <span class="step-title">Stir Fry</span>
+                        </div>
+                        <div class="step-content">
+                            <p>Add ingredients in order:</p>
+                            <div class="ingredient-order">
+                                <button class="action-btn ingredient-btn" id="addEggBtn" disabled>Add Egg 🥚</button>
+                                <button class="action-btn ingredient-btn" id="addRiceBtn" disabled>Add Rice 🍚</button>
+                                <button class="action-btn ingredient-btn" id="addShallotBtn" disabled>Add Shallot 🧅</button>
+                            </div>
+                            <div class="step-progress" id="step5-progress">0/3 added</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 6 -->
+                    <div class="step locked" id="step6" data-step="6">
+                        <div class="step-header">
+                            <span class="step-number">6</span>
+                            <span class="step-title">Finish!</span>
+                        </div>
+                        <div class="step-content">
+                            <p>Your egg fried rice is ready!</p>
+                            <button class="action-btn" id="finishBtn" disabled>Complete Dish</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completion Message -->
+                <div id="completionMessage" class="completion-message" style="display: none;">
+                    <h2>🎉 Congratulations! 🎉</h2>
+                    <p>You cooked Egg Fried Rice!</p>
+                    <div class="final-dish">🍳🍚✨</div>
+                    <button class="action-btn" id="restartBtn">Cook Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
