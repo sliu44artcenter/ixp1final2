@@ -1,545 +1,199 @@
-// ===========================
-// Egg Fried Rice Game
-// ===========================
+// ===================================
+// EGG FRIED RICE - COOKING GAME
+// Interactive Cooking Simulation
+// ===================================
 
 // Game State
 const gameState = {
-    currentStep: 1,
-    textures: {},
-    ingredients: {
-        egg: false,
-        shallot: false,
-        rice: false,
-        oil: false
-    },
-    cutProgress: 0,
-    cutRequired: 10,
-    wokHeated: false,
-    wokOiled: false,
-    wokIngredients: [],
-    gameComplete: false
+    ingredientsAdded: [],
+    totalIngredients: 4,
+    currentStep: 0,
+    instructions: [
+        'Click on the ingredients to add them to your wok! Start with egg 🥚',
+        'Great! Now add the rice 🍚',
+        'Perfect! Add some green onion 🧅',
+        'Almost done! Pour in some oil 🛢️',
+        'Excellent! Your Egg Fried Rice is ready!'
+    ]
 };
 
-// Canvas Setup
-let canvas, ctx;
+// DOM Elements
+let progressFill, instructionText, finalScreen;
+let ingredientButtons, resetBtn;
+let overlay1, overlay2, wokImage;
 
-// ===========================
-// Initialization
-// ===========================
-
+// ===================================
+// INITIALIZATION
+// ===================================
 function init() {
     console.log('🍳 Initializing Egg Fried Rice Game...');
 
-    canvas = document.getElementById('gameCanvas');
-    ctx = canvas.getContext('2d');
+    // Get DOM elements
+    progressFill = document.getElementById('progressFill');
+    instructionText = document.getElementById('instructionText');
+    finalScreen = document.getElementById('finalScreen');
+    resetBtn = document.getElementById('resetBtn');
+    overlay1 = document.getElementById('overlay1');
+    overlay2 = document.getElementById('overlay2');
+    wokImage = document.getElementById('wokImage');
 
-    // Load textures
-    loadTextures();
-
-    // Initialize scene
-    initScene();
+    // Get all ingredient buttons
+    ingredientButtons = document.querySelectorAll('.ingredient-button');
 
     // Setup event listeners
     setupEventListeners();
 
-    // Start with step 1 active
-    activateStep(1);
+    // Start the game
+    updateInstruction();
 }
 
-// ===========================
-// Texture Loading
-// ===========================
-
-function loadTextures() {
-    console.log('📦 Loading textures...');
-
-    const textureFiles = [
-        'textures/kitchen1.png',
-        'textures/kitchen2.png',
-        'textures/kitchen3.png'
-    ];
-
-    let loadedCount = 0;
-
-    textureFiles.forEach((file, index) => {
-        const img = new Image();
-        img.onload = () => {
-            gameState.textures[`kitchen${index + 1}`] = img;
-            loadedCount++;
-
-            if (loadedCount === textureFiles.length) {
-                console.log('✅ All textures loaded!');
-                renderScene();
-            }
-        };
-
-        img.onerror = () => {
-            console.warn(`⚠️ Could not load ${file}. Using placeholder.`);
-            loadedCount++;
-
-            if (loadedCount === textureFiles.length) {
-                renderScene();
-            }
-        };
-
-        img.src = file;
-    });
-}
-
-// ===========================
-// Scene Initialization & Rendering
-// ===========================
-
-function initScene() {
-    console.log('🎨 Initializing scene...');
-    renderScene();
-}
-
-function renderScene() {
-    // Clear canvas
-    ctx.fillStyle = '#8b7355';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Render background texture (kitchen1 as main background)
-    if (gameState.textures.kitchen1) {
-        ctx.globalAlpha = 0.4;
-        ctx.drawImage(gameState.textures.kitchen1, 0, 0, canvas.width, canvas.height);
-        ctx.globalAlpha = 1.0;
-    }
-
-    // Render based on current step
-    switch (gameState.currentStep) {
-        case 1:
-            renderIngredientSelectionScene();
-            break;
-        case 2:
-            renderCuttingBoardScene();
-            break;
-        case 3:
-        case 4:
-        case 5:
-            renderWokScene();
-            break;
-        case 6:
-            renderFinalDishScene();
-            break;
-    }
-
-    // Add kitchen atmosphere
-    addKitchenAtmosphere();
-}
-
-function renderIngredientSelectionScene() {
-    // Draw a kitchen counter/table area
-    ctx.fillStyle = '#b8956a';
-    ctx.fillRect(50, 150, 700, 250);
-
-    // Draw counter edge
-    ctx.fillStyle = '#8b7355';
-    ctx.fillRect(50, 150, 700, 20);
-
-    // Add texture overlay (kitchen2) for counter
-    if (gameState.textures.kitchen2) {
-        ctx.globalAlpha = 0.3;
-        ctx.drawImage(gameState.textures.kitchen2, 50, 150, 700, 250);
-        ctx.globalAlpha = 1.0;
-    }
-
-    // Draw labels
-    ctx.fillStyle = '#5a4635';
-    ctx.font = 'bold 24px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('Select Your Ingredients', canvas.width / 2, 100);
-}
-
-function renderCuttingBoardScene() {
-    // Use kitchen3 texture for cutting board area
-    if (gameState.textures.kitchen3) {
-        ctx.globalAlpha = 0.5;
-        ctx.drawImage(gameState.textures.kitchen3, 200, 150, 400, 300);
-        ctx.globalAlpha = 1.0;
-    }
-}
-
-function renderWokScene() {
-    // Draw stove area
-    ctx.fillStyle = '#3a3a3a';
-    ctx.fillRect(150, 200, 500, 300);
-
-    // Use kitchen textures for stove background
-    if (gameState.textures.kitchen1) {
-        ctx.globalAlpha = 0.2;
-        ctx.drawImage(gameState.textures.kitchen1, 150, 200, 500, 300);
-        ctx.globalAlpha = 1.0;
-    }
-
-    // Draw stove top
-    ctx.fillStyle = '#2c2c2c';
-    ctx.fillRect(200, 250, 400, 200);
-
-    // Draw wok outline
-    ctx.strokeStyle = '#4a4a4a';
-    ctx.lineWidth = 8;
-    ctx.beginPath();
-    ctx.arc(400, 350, 175, 0, Math.PI * 2);
-    ctx.stroke();
-}
-
-function renderFinalDishScene() {
-    // Draw final presentation area
-    ctx.fillStyle = '#d4a574';
-    ctx.fillRect(100, 100, 600, 400);
-
-    // Use all textures for final scene
-    if (gameState.textures.kitchen2) {
-        ctx.globalAlpha = 0.3;
-        ctx.drawImage(gameState.textures.kitchen2, 100, 100, 600, 400);
-        ctx.globalAlpha = 1.0;
-    }
-
-    // Draw serving plate
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.arc(400, 300, 150, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.strokeStyle = '#ff6b35';
-    ctx.lineWidth = 5;
-    ctx.stroke();
-
-    // Add decorative elements
-    ctx.fillStyle = '#5a4635';
-    ctx.font = 'bold 36px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('🍳 Delicious! 🍚', 400, 520);
-}
-
-function addKitchenAtmosphere() {
-    // Add subtle vignette effect
-    const gradient = ctx.createRadialGradient(
-        canvas.width / 2, canvas.height / 2, 100,
-        canvas.width / 2, canvas.height / 2, canvas.width / 2
-    );
-    gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-    gradient.addColorStop(1, 'rgba(0, 0, 0, 0.3)');
-
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-}
-
-// ===========================
-// Event Listeners
-// ===========================
-
+// ===================================
+// EVENT LISTENERS
+// ===================================
 function setupEventListeners() {
-    // Step 1: Ingredient selection
-    const ingredients = document.querySelectorAll('.ingredient');
-    ingredients.forEach(ingredient => {
-        ingredient.addEventListener('click', () => clickIngredient(ingredient));
+    // Ingredient buttons
+    ingredientButtons.forEach(button => {
+        button.addEventListener('click', () => handleIngredientClick(button));
     });
 
-    // Step 2: Cutting
-    const cutBtn = document.getElementById('cutBtn');
-    const cuttingBoard = document.getElementById('cuttingBoard');
-
-    cutBtn.addEventListener('click', startCutting);
-    cuttingBoard.addEventListener('click', cutIngredient);
-
-    // Step 3: Heat wok
-    const heatBtn = document.getElementById('heatBtn');
-    heatBtn.addEventListener('click', heatWok);
-
-    // Step 4: Add oil
-    const oilBtn = document.getElementById('oilBtn');
-    oilBtn.addEventListener('click', addOil);
-
-    // Step 5: Add ingredients to wok
-    const addEggBtn = document.getElementById('addEggBtn');
-    const addRiceBtn = document.getElementById('addRiceBtn');
-    const addShallotBtn = document.getElementById('addShallotBtn');
-
-    addEggBtn.addEventListener('click', () => addToWok('egg'));
-    addRiceBtn.addEventListener('click', () => addToWok('rice'));
-    addShallotBtn.addEventListener('click', () => addToWok('shallot'));
-
-    // Step 6: Complete
-    const finishBtn = document.getElementById('finishBtn');
-    finishBtn.addEventListener('click', completeDish);
-
-    // Restart button
-    const restartBtn = document.getElementById('restartBtn');
-    restartBtn.addEventListener('click', restartGame);
+    // Reset button
+    resetBtn.addEventListener('click', resetGame);
 }
 
-// ===========================
-// Step 1: Take Ingredients
-// ===========================
+// ===================================
+// GAME LOGIC
+// ===================================
+function handleIngredientClick(button) {
+    const ingredient = button.dataset.ingredient;
 
-function clickIngredient(ingredientElement) {
-    const type = ingredientElement.dataset.type;
-
-    if (gameState.currentStep !== 1 || gameState.ingredients[type]) {
+    // Check if already used
+    if (gameState.ingredientsAdded.includes(ingredient)) {
         return;
     }
 
-    // Mark as collected
-    gameState.ingredients[type] = true;
-    ingredientElement.classList.add('collected');
+    // Add ingredient
+    gameState.ingredientsAdded.push(ingredient);
 
-    // Add to prep tray
-    const prepItems = document.getElementById('prepItems');
-    const prepItem = document.createElement('div');
-    prepItem.className = 'prep-item';
-    prepItem.textContent = ingredientElement.querySelector('.ingredient-icon').textContent;
-    prepItems.appendChild(prepItem);
-
-    // Update progress
-    const collected = Object.values(gameState.ingredients).filter(v => v).length;
-    document.getElementById('step1-progress').textContent = `${collected}/4 collected`;
-
-    // Check if all collected
-    if (collected === 4) {
-        setTimeout(() => {
-            completeStep(1);
-            activateStep(2);
-            document.getElementById('cutBtn').disabled = false;
-        }, 500);
-    }
-}
-
-// ===========================
-// Step 2: Cut Ingredients
-// ===========================
-
-function startCutting() {
-    // Hide ingredients, show cutting board
-    document.querySelectorAll('.ingredient').forEach(el => el.style.display = 'none');
-    document.getElementById('prepTray').style.display = 'none';
-    document.getElementById('cuttingBoard').style.display = 'block';
-
-    renderScene();
-}
-
-function cutIngredient() {
-    if (gameState.currentStep !== 2) return;
-
-    gameState.cutProgress++;
-
-    // Update progress display
-    document.getElementById('cutProgress').textContent =
-        `${gameState.cutProgress}/${gameState.cutRequired}`;
+    // Mark button as used
+    button.classList.add('used');
 
     // Add visual feedback
-    const cutArea = document.querySelector('.cutting-area');
-    cutArea.style.transform = 'scale(0.95)';
-    setTimeout(() => {
-        cutArea.style.transform = 'scale(1)';
-    }, 100);
-
-    // Check if cutting complete
-    if (gameState.cutProgress >= gameState.cutRequired) {
-        setTimeout(() => {
-            document.getElementById('cutIndicator').textContent = '✅ All cut!';
-            setTimeout(() => {
-                completeStep(2);
-                activateStep(3);
-                document.getElementById('heatBtn').disabled = false;
-                prepareWokArea();
-            }, 1000);
-        }, 300);
-    }
-}
-
-// ===========================
-// Step 3: Heat the Wok
-// ===========================
-
-function prepareWokArea() {
-    // Hide cutting board, show wok
-    document.getElementById('cuttingBoard').style.display = 'none';
-    document.getElementById('wokArea').style.display = 'block';
-
-    renderScene();
-}
-
-function heatWok() {
-    if (gameState.currentStep !== 3) return;
-
-    gameState.wokHeated = true;
-
-    // Activate stove glow
-    const stoveGlow = document.getElementById('stoveGlow');
-    stoveGlow.classList.add('active');
-
-    // Visual feedback
-    updateWokTexture();
-
-    setTimeout(() => {
-        completeStep(3);
-        activateStep(4);
-        document.getElementById('oilBtn').disabled = false;
-    }, 1500);
-}
-
-// ===========================
-// Step 4: Add Oil
-// ===========================
-
-function addOil() {
-    if (gameState.currentStep !== 4) return;
-
-    gameState.wokOiled = true;
-
-    // Update wok appearance
-    const wokContents = document.getElementById('wokContents');
-    wokContents.classList.add('oiled');
-
-    updateWokTexture();
-
-    setTimeout(() => {
-        completeStep(4);
-        activateStep(5);
-        document.getElementById('addEggBtn').disabled = false;
-    }, 1000);
-}
-
-// ===========================
-// Step 5: Stir Fry
-// ===========================
-
-function addToWok(ingredient) {
-    if (gameState.currentStep !== 5) return;
-
-    // Add ingredient to wok
-    gameState.wokIngredients.push(ingredient);
-
-    // Create visual element
-    const wokContents = document.getElementById('wokContents');
-    const ingredientEl = document.createElement('div');
-    ingredientEl.className = 'wok-ingredient';
-
-    // Map ingredient to emoji
-    const ingredientEmojis = {
-        egg: '🥚',
-        rice: '🍚',
-        shallot: '🧅'
-    };
-
-    ingredientEl.textContent = ingredientEmojis[ingredient];
-    wokContents.appendChild(ingredientEl);
-
-    // Update wok texture
-    updateWokTexture();
+    button.classList.add('shake');
+    setTimeout(() => button.classList.remove('shake'), 500);
 
     // Update progress
-    const addedCount = gameState.wokIngredients.length;
-    document.getElementById('step5-progress').textContent = `${addedCount}/3 added`;
+    updateProgress();
 
-    // Enable next button in sequence
-    if (ingredient === 'egg') {
-        document.getElementById('addEggBtn').disabled = true;
-        document.getElementById('addRiceBtn').disabled = false;
-    } else if (ingredient === 'rice') {
-        document.getElementById('addRiceBtn').disabled = true;
-        document.getElementById('addShallotBtn').disabled = false;
-    } else if (ingredient === 'shallot') {
-        document.getElementById('addShallotBtn').disabled = true;
+    // Show ingredient overlays progressively
+    showIngredientOverlay();
 
-        // All ingredients added
-        setTimeout(() => {
-            completeStep(5);
-            activateStep(6);
-            document.getElementById('finishBtn').disabled = false;
-        }, 1000);
+    // Update instruction
+    gameState.currentStep++;
+    updateInstruction();
+
+    // Play sound effect (optional - can be added)
+    playAddSound();
+
+    // Check if complete
+    if (gameState.ingredientsAdded.length === gameState.totalIngredients) {
+        setTimeout(showFinalScreen, 1000);
     }
 }
 
-// ===========================
-// Step 6: Complete Dish
-// ===========================
+function updateProgress() {
+    const progress = (gameState.ingredientsAdded.length / gameState.totalIngredients) * 100;
+    progressFill.style.width = progress + '%';
+}
 
-function completeDish() {
-    if (gameState.currentStep !== 6) return;
+function updateInstruction() {
+    instructionText.textContent = gameState.instructions[gameState.currentStep];
+    instructionText.classList.add('fade-in');
 
-    gameState.gameComplete = true;
+    setTimeout(() => {
+        instructionText.classList.remove('fade-in');
+    }, 500);
+}
 
-    // Hide wok area
-    document.getElementById('wokArea').style.display = 'none';
+function showIngredientOverlay() {
+    const ingredientCount = gameState.ingredientsAdded.length;
 
-    // Render final scene
-    renderScene();
+    // Show overlays progressively
+    if (ingredientCount === 1) {
+        // First ingredient - start showing overlay1
+        overlay1.classList.add('visible');
+    } else if (ingredientCount === 2) {
+        // Second ingredient - enhance overlay1
+        overlay1.style.opacity = '0.8';
+    } else if (ingredientCount === 3) {
+        // Third ingredient - show overlay2
+        overlay2.classList.add('visible');
+        overlay2.style.opacity = '0.6';
+    } else if (ingredientCount === 4) {
+        // Final ingredient - full overlays
+        overlay1.style.opacity = '1';
+        overlay2.style.opacity = '0.9';
+    }
+}
 
-    // Complete step
-    completeStep(6);
+function showFinalScreen() {
+    // Show final screen with animation
+    finalScreen.classList.add('visible');
 
-    // Show completion message
-    document.querySelector('.steps-container').style.display = 'none';
-    document.getElementById('completionMessage').style.display = 'block';
-
-    // Celebration effect
+    // Play celebration effect
     createConfetti();
 }
 
-// ===========================
-// Helper Functions
-// ===========================
+// ===================================
+// RESET GAME
+// ===================================
+function resetGame() {
+    console.log('🔄 Resetting game...');
 
-function activateStep(stepNumber) {
-    gameState.currentStep = stepNumber;
+    // Reset game state
+    gameState.ingredientsAdded = [];
+    gameState.currentStep = 0;
 
-    // Remove active class from all steps
-    document.querySelectorAll('.step').forEach(step => {
-        step.classList.remove('active');
+    // Reset progress bar
+    progressFill.style.width = '0%';
+
+    // Reset ingredient buttons
+    ingredientButtons.forEach(button => {
+        button.classList.remove('used', 'shake');
     });
 
-    // Add active class to current step
-    const currentStepEl = document.getElementById(`step${stepNumber}`);
-    if (currentStepEl) {
-        currentStepEl.classList.remove('locked');
-        currentStepEl.classList.add('active');
+    // Reset overlays
+    overlay1.classList.remove('visible');
+    overlay2.classList.remove('visible');
+    overlay1.style.opacity = '';
+    overlay2.style.opacity = '';
 
-        // Scroll into view
-        currentStepEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
+    // Hide final screen
+    finalScreen.classList.remove('visible');
 
-    console.log(`📍 Step ${stepNumber} activated`);
+    // Reset instruction
+    updateInstruction();
 }
 
-function completeStep(stepNumber) {
-    const stepEl = document.getElementById(`step${stepNumber}`);
-    if (stepEl) {
-        stepEl.classList.remove('active');
-        stepEl.classList.add('completed');
-
-        // Add checkmark
-        const stepNumber = stepEl.querySelector('.step-number');
-        stepNumber.textContent = '✓';
-    }
-
-    console.log(`✅ Step ${stepNumber} completed`);
-}
-
-function updateWokTexture() {
-    // Re-render the scene to show wok changes
-    renderScene();
-
-    // Add particle effects based on state
-    if (gameState.wokHeated && gameState.wokOiled) {
-        // Could add steam/smoke particles here
-        console.log('🔥 Wok is hot and oiled!');
-    }
+// ===================================
+// VISUAL EFFECTS
+// ===================================
+function playAddSound() {
+    // Optional: Add sound effects here
+    // For now, just log
+    console.log('🎵 Ingredient added!');
 }
 
 function createConfetti() {
-    // Simple confetti celebration
-    const colors = ['#ff6b35', '#f7931e', '#4caf50', '#ffd700', '#ff69b4'];
+    // Create colorful confetti particles
+    const colors = ['#ff1493', '#4169e1', '#ffd700', '#00ff00', '#ff6347'];
+    const container = document.querySelector('.container');
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 100; i++) {
         setTimeout(() => {
             const confetti = document.createElement('div');
-            confetti.style.position = 'fixed';
-            confetti.style.left = Math.random() * window.innerWidth + 'px';
-            confetti.style.top = '-20px';
+            confetti.style.position = 'absolute';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.top = '-10px';
             confetti.style.width = '10px';
             confetti.style.height = '10px';
             confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
@@ -548,90 +202,85 @@ function createConfetti() {
             confetti.style.zIndex = '9999';
             confetti.style.transition = 'all 3s ease-in';
 
-            document.body.appendChild(confetti);
+            container.appendChild(confetti);
 
+            // Animate falling
             setTimeout(() => {
-                confetti.style.top = window.innerHeight + 'px';
-                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                confetti.style.top = '100%';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg) translateX(${(Math.random() - 0.5) * 200}px)`;
+                confetti.style.opacity = '0';
             }, 10);
 
+            // Remove after animation
             setTimeout(() => {
                 confetti.remove();
             }, 3000);
-        }, i * 50);
+        }, i * 30);
     }
 }
 
-function restartGame() {
-    // Reset game state
-    gameState.currentStep = 1;
-    gameState.ingredients = { egg: false, shallot: false, rice: false, oil: false };
-    gameState.cutProgress = 0;
-    gameState.wokHeated = false;
-    gameState.wokOiled = false;
-    gameState.wokIngredients = [];
-    gameState.gameComplete = false;
+// ===================================
+// TEXTURE PRELOADING
+// ===================================
+function preloadTextures() {
+    const textures = [
+        'textures/kitchen1.png',
+        'textures/kitchen2.png',
+        'textures/kitchen3.png'
+    ];
 
-    // Reset UI
-    document.getElementById('completionMessage').style.display = 'none';
-    document.querySelector('.steps-container').style.display = 'block';
+    let loadedCount = 0;
 
-    // Reset all steps
-    document.querySelectorAll('.step').forEach((step, index) => {
-        step.classList.remove('active', 'completed');
-        if (index > 0) {
-            step.classList.add('locked');
-        }
-
-        // Reset step numbers
-        const stepNumber = step.querySelector('.step-number');
-        stepNumber.textContent = index + 1;
+    textures.forEach(src => {
+        const img = new Image();
+        img.onload = () => {
+            loadedCount++;
+            if (loadedCount === textures.length) {
+                console.log('✅ All textures loaded!');
+            }
+        };
+        img.onerror = () => {
+            console.warn(`⚠️ Failed to load: ${src}`);
+            loadedCount++;
+        };
+        img.src = src;
     });
-
-    // Reset buttons
-    document.querySelectorAll('.action-btn').forEach(btn => {
-        btn.disabled = true;
-    });
-
-    // Reset ingredients
-    document.querySelectorAll('.ingredient').forEach(ingredient => {
-        ingredient.classList.remove('collected');
-        ingredient.style.display = 'block';
-    });
-
-    // Reset prep tray
-    document.getElementById('prepItems').innerHTML = '';
-    document.getElementById('prepTray').style.display = 'block';
-    document.getElementById('step1-progress').textContent = '0/4 collected';
-
-    // Reset cutting board
-    document.getElementById('cutProgress').textContent = '0/10';
-    document.getElementById('cutIndicator').textContent = 'Click to cut!';
-    document.getElementById('cuttingBoard').style.display = 'none';
-
-    // Reset wok
-    document.getElementById('stoveGlow').classList.remove('active');
-    document.getElementById('wokContents').classList.remove('oiled');
-    document.getElementById('wokContents').innerHTML = '';
-    document.getElementById('wokArea').style.display = 'none';
-    document.getElementById('step5-progress').textContent = '0/3 added';
-
-    // Restart game
-    activateStep(1);
-    renderScene();
-
-    console.log('🔄 Game restarted!');
 }
 
-// ===========================
-// Start Game
-// ===========================
-
-// Wait for DOM to be ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-} else {
+// ===================================
+// START GAME
+// ===================================
+document.addEventListener('DOMContentLoaded', () => {
     init();
-}
+    preloadTextures();
+    console.log('🎮 Egg Fried Rice Game Ready!');
+});
 
-console.log('🎮 Egg Fried Rice Game loaded!');
+// ===================================
+// KEYBOARD SHORTCUTS (OPTIONAL)
+// ===================================
+document.addEventListener('keydown', (e) => {
+    // Press R to reset
+    if (e.key === 'r' || e.key === 'R') {
+        if (finalScreen.classList.contains('visible')) {
+            resetGame();
+        }
+    }
+
+    // Press 1-4 to add ingredients
+    const keyMap = {
+        '1': 'eggBtn',
+        '2': 'riceBtn',
+        '3': 'greenOnionBtn',
+        '4': 'oilBtn'
+    };
+
+    if (keyMap[e.key]) {
+        const button = document.getElementById(keyMap[e.key]);
+        if (button && !button.classList.contains('used')) {
+            button.click();
+        }
+    }
+});
+
+console.log('🍳 Game loaded successfully!');
