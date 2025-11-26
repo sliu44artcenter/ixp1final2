@@ -437,3 +437,198 @@ body {
         display: none;
     }
 }
+
+/* ===================================
+   CSS-ONLY GAME LOGIC
+   =================================== */
+
+/* Mark ingredients as used when checked */
+#egg:checked ~ .container .ingredients-panel label[for="egg"] {
+    opacity: 0.3;
+    pointer-events: none;
+    transform: scale(0.9);
+}
+
+#rice:checked ~ .container .ingredients-panel label[for="rice"] {
+    opacity: 0.3;
+    pointer-events: none;
+    transform: scale(0.9);
+}
+
+#greenOnion:checked ~ .container .ingredients-panel label[for="greenOnion"] {
+    opacity: 0.3;
+    pointer-events: none;
+    transform: scale(0.9);
+}
+
+#oil:checked ~ .container .ingredients-panel label[for="oil"] {
+    opacity: 0.3;
+    pointer-events: none;
+    transform: scale(0.9);
+}
+
+/* Progress Bar - 1 ingredient */
+#egg:checked ~ .container .progress-fill {
+    width: 25%;
+}
+
+/* Progress Bar - 2 ingredients */
+#egg:checked ~ #rice:checked ~ .container .progress-fill,
+#rice:checked ~ #egg:checked ~ .container .progress-fill {
+    width: 50%;
+}
+
+/* Progress Bar - 3 ingredients */
+#egg:checked ~ #rice:checked ~ #greenOnion:checked ~ .container .progress-fill,
+#egg:checked ~ #greenOnion:checked ~ #rice:checked ~ .container .progress-fill,
+#rice:checked ~ #egg:checked ~ #greenOnion:checked ~ .container .progress-fill,
+#rice:checked ~ #greenOnion:checked ~ #egg:checked ~ .container .progress-fill,
+#greenOnion:checked ~ #egg:checked ~ #rice:checked ~ .container .progress-fill,
+#greenOnion:checked ~ #rice:checked ~ #egg:checked ~ .container .progress-fill {
+    width: 75%;
+}
+
+/* Progress Bar - 4 ingredients (all) */
+#egg:checked ~ #rice:checked ~ #greenOnion:checked ~ #oil:checked ~ .container .progress-fill,
+#egg:checked ~ #rice:checked ~ #oil:checked ~ #greenOnion:checked ~ .container .progress-fill,
+#egg:checked ~ #greenOnion:checked ~ #rice:checked ~ #oil:checked ~ .container .progress-fill,
+#egg:checked ~ #greenOnion:checked ~ #oil:checked ~ #rice:checked ~ .container .progress-fill,
+#egg:checked ~ #oil:checked ~ #rice:checked ~ #greenOnion:checked ~ .container .progress-fill,
+#egg:checked ~ #oil:checked ~ #greenOnion:checked ~ #rice:checked ~ .container .progress-fill,
+#rice:checked ~ #egg:checked ~ #greenOnion:checked ~ #oil:checked ~ .container .progress-fill,
+#rice:checked ~ #egg:checked ~ #oil:checked ~ #greenOnion:checked ~ .container .progress-fill,
+#rice:checked ~ #greenOnion:checked ~ #egg:checked ~ #oil:checked ~ .container .progress-fill,
+#rice:checked ~ #greenOnion:checked ~ #oil:checked ~ #egg:checked ~ .container .progress-fill,
+#rice:checked ~ #oil:checked ~ #egg:checked ~ #greenOnion:checked ~ .container .progress-fill,
+#rice:checked ~ #oil:checked ~ #greenOnion:checked ~ #egg:checked ~ .container .progress-fill,
+#greenOnion:checked ~ #egg:checked ~ #rice:checked ~ #oil:checked ~ .container .progress-fill,
+#greenOnion:checked ~ #egg:checked ~ #oil:checked ~ #rice:checked ~ .container .progress-fill,
+#greenOnion:checked ~ #rice:checked ~ #egg:checked ~ #oil:checked ~ .container .progress-fill,
+#greenOnion:checked ~ #rice:checked ~ #oil:checked ~ #egg:checked ~ .container .progress-fill,
+#greenOnion:checked ~ #oil:checked ~ #egg:checked ~ #rice:checked ~ .container .progress-fill,
+#greenOnion:checked ~ #oil:checked ~ #rice:checked ~ #egg:checked ~ .container .progress-fill,
+#oil:checked ~ #egg:checked ~ #rice:checked ~ #greenOnion:checked ~ .container .progress-fill,
+#oil:checked ~ #egg:checked ~ #greenOnion:checked ~ #rice:checked ~ .container .progress-fill,
+#oil:checked ~ #rice:checked ~ #egg:checked ~ #greenOnion:checked ~ .container .progress-fill,
+#oil:checked ~ #rice:checked ~ #greenOnion:checked ~ #egg:checked ~ .container .progress-fill,
+#oil:checked ~ #greenOnion:checked ~ #egg:checked ~ #rice:checked ~ .container .progress-fill,
+#oil:checked ~ #greenOnion:checked ~ #rice:checked ~ #egg:checked ~ .container .progress-fill {
+    width: 100%;
+}
+
+/* Ingredient Overlays */
+#egg:checked ~ .container .cooking-area #overlay1 {
+    opacity: 0.5;
+}
+
+#egg:checked ~ #rice:checked ~ .container .cooking-area #overlay1,
+#rice:checked ~ #egg:checked ~ .container .cooking-area #overlay1 {
+    opacity: 0.8;
+}
+
+#egg:checked ~ #rice:checked ~ #greenOnion:checked ~ .container .cooking-area #overlay1,
+#egg:checked ~ #greenOnion:checked ~ #rice:checked ~ .container .cooking-area #overlay1,
+#rice:checked ~ #egg:checked ~ #greenOnion:checked ~ .container .cooking-area #overlay1,
+#rice:checked ~ #greenOnion:checked ~ #egg:checked ~ .container .cooking-area #overlay1,
+#greenOnion:checked ~ #egg:checked ~ #rice:checked ~ .container .cooking-area #overlay1,
+#greenOnion:checked ~ #rice:checked ~ #egg:checked ~ .container .cooking-area #overlay1 {
+    opacity: 1;
+}
+
+#egg:checked ~ #rice:checked ~ #greenOnion:checked ~ .container .cooking-area #overlay2,
+#egg:checked ~ #greenOnion:checked ~ #rice:checked ~ .container .cooking-area #overlay2,
+#rice:checked ~ #egg:checked ~ #greenOnion:checked ~ .container .cooking-area #overlay2,
+#rice:checked ~ #greenOnion:checked ~ #egg:checked ~ .container .cooking-area #overlay2,
+#greenOnion:checked ~ #egg:checked ~ #rice:checked ~ .container .cooking-area #overlay2,
+#greenOnion:checked ~ #rice:checked ~ #egg:checked ~ .container .cooking-area #overlay2 {
+    opacity: 0.6;
+}
+
+#egg:checked ~ #rice:checked ~ #greenOnion:checked ~ #oil:checked ~ .container .cooking-area #overlay2,
+#egg:checked ~ #rice:checked ~ #oil:checked ~ #greenOnion:checked ~ .container .cooking-area #overlay2,
+#egg:checked ~ #greenOnion:checked ~ #rice:checked ~ #oil:checked ~ .container .cooking-area #overlay2,
+#egg:checked ~ #greenOnion:checked ~ #oil:checked ~ #rice:checked ~ .container .cooking-area #overlay2,
+#egg:checked ~ #oil:checked ~ #rice:checked ~ #greenOnion:checked ~ .container .cooking-area #overlay2,
+#egg:checked ~ #oil:checked ~ #greenOnion:checked ~ #rice:checked ~ .container .cooking-area #overlay2,
+#rice:checked ~ #egg:checked ~ #greenOnion:checked ~ #oil:checked ~ .container .cooking-area #overlay2,
+#rice:checked ~ #egg:checked ~ #oil:checked ~ #greenOnion:checked ~ .container .cooking-area #overlay2,
+#rice:checked ~ #greenOnion:checked ~ #egg:checked ~ #oil:checked ~ .container .cooking-area #overlay2,
+#rice:checked ~ #greenOnion:checked ~ #oil:checked ~ #egg:checked ~ .container .cooking-area #overlay2,
+#rice:checked ~ #oil:checked ~ #egg:checked ~ #greenOnion:checked ~ .container .cooking-area #overlay2,
+#rice:checked ~ #oil:checked ~ #greenOnion:checked ~ #egg:checked ~ .container .cooking-area #overlay2,
+#greenOnion:checked ~ #egg:checked ~ #rice:checked ~ #oil:checked ~ .container .cooking-area #overlay2,
+#greenOnion:checked ~ #egg:checked ~ #oil:checked ~ #rice:checked ~ .container .cooking-area #overlay2,
+#greenOnion:checked ~ #rice:checked ~ #egg:checked ~ #oil:checked ~ .container .cooking-area #overlay2,
+#greenOnion:checked ~ #rice:checked ~ #oil:checked ~ #egg:checked ~ .container .cooking-area #overlay2,
+#greenOnion:checked ~ #oil:checked ~ #egg:checked ~ #rice:checked ~ .container .cooking-area #overlay2,
+#greenOnion:checked ~ #oil:checked ~ #rice:checked ~ #egg:checked ~ .container .cooking-area #overlay2,
+#oil:checked ~ #egg:checked ~ #rice:checked ~ #greenOnion:checked ~ .container .cooking-area #overlay2,
+#oil:checked ~ #egg:checked ~ #greenOnion:checked ~ #rice:checked ~ .container .cooking-area #overlay2,
+#oil:checked ~ #rice:checked ~ #egg:checked ~ #greenOnion:checked ~ .container .cooking-area #overlay2,
+#oil:checked ~ #rice:checked ~ #greenOnion:checked ~ #egg:checked ~ .container .cooking-area #overlay2,
+#oil:checked ~ #greenOnion:checked ~ #egg:checked ~ #rice:checked ~ .container .cooking-area #overlay2,
+#oil:checked ~ #greenOnion:checked ~ #rice:checked ~ #egg:checked ~ .container .cooking-area #overlay2 {
+    opacity: 0.9;
+}
+
+/* Show Final Screen when all 4 ingredients are added */
+#egg:checked ~ #rice:checked ~ #greenOnion:checked ~ #oil:checked ~ .container .final-screen,
+#egg:checked ~ #rice:checked ~ #oil:checked ~ #greenOnion:checked ~ .container .final-screen,
+#egg:checked ~ #greenOnion:checked ~ #rice:checked ~ #oil:checked ~ .container .final-screen,
+#egg:checked ~ #greenOnion:checked ~ #oil:checked ~ #rice:checked ~ .container .final-screen,
+#egg:checked ~ #oil:checked ~ #rice:checked ~ #greenOnion:checked ~ .container .final-screen,
+#egg:checked ~ #oil:checked ~ #greenOnion:checked ~ #rice:checked ~ .container .final-screen,
+#rice:checked ~ #egg:checked ~ #greenOnion:checked ~ #oil:checked ~ .container .final-screen,
+#rice:checked ~ #egg:checked ~ #oil:checked ~ #greenOnion:checked ~ .container .final-screen,
+#rice:checked ~ #greenOnion:checked ~ #egg:checked ~ #oil:checked ~ .container .final-screen,
+#rice:checked ~ #greenOnion:checked ~ #oil:checked ~ #egg:checked ~ .container .final-screen,
+#rice:checked ~ #oil:checked ~ #egg:checked ~ #greenOnion:checked ~ .container .final-screen,
+#rice:checked ~ #oil:checked ~ #greenOnion:checked ~ #egg:checked ~ .container .final-screen,
+#greenOnion:checked ~ #egg:checked ~ #rice:checked ~ #oil:checked ~ .container .final-screen,
+#greenOnion:checked ~ #egg:checked ~ #oil:checked ~ #rice:checked ~ .container .final-screen,
+#greenOnion:checked ~ #rice:checked ~ #egg:checked ~ #oil:checked ~ .container .final-screen,
+#greenOnion:checked ~ #rice:checked ~ #oil:checked ~ #egg:checked ~ .container .final-screen,
+#greenOnion:checked ~ #oil:checked ~ #egg:checked ~ #rice:checked ~ .container .final-screen,
+#greenOnion:checked ~ #oil:checked ~ #rice:checked ~ #egg:checked ~ .container .final-screen,
+#oil:checked ~ #egg:checked ~ #rice:checked ~ #greenOnion:checked ~ .container .final-screen,
+#oil:checked ~ #egg:checked ~ #greenOnion:checked ~ #rice:checked ~ .container .final-screen,
+#oil:checked ~ #rice:checked ~ #egg:checked ~ #greenOnion:checked ~ .container .final-screen,
+#oil:checked ~ #rice:checked ~ #greenOnion:checked ~ #egg:checked ~ .container .final-screen,
+#oil:checked ~ #greenOnion:checked ~ #egg:checked ~ #rice:checked ~ .container .final-screen,
+#oil:checked ~ #greenOnion:checked ~ #rice:checked ~ #egg:checked ~ .container .final-screen {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Reset functionality */
+#reset:checked ~ #egg,
+#reset:checked ~ #rice,
+#reset:checked ~ #greenOnion,
+#reset:checked ~ #oil {
+    display: none;
+}
+
+#reset:checked ~ .container .ingredients-panel label {
+    opacity: 1;
+    pointer-events: all;
+    transform: scale(1);
+}
+
+#reset:checked ~ .container .progress-fill {
+    width: 0%;
+}
+
+#reset:checked ~ .container .cooking-area #overlay1,
+#reset:checked ~ .container .cooking-area #overlay2 {
+    opacity: 0;
+}
+
+#reset:checked ~ .container .final-screen {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Uncheck reset after use */
+#reset:checked {
+    display: none;
+}

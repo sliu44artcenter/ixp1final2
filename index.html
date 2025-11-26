@@ -3,60 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Egg Fried Rice - Cooking Game</title>
+    <title>Egg Fried Rice - Pure CSS Game</title>
     <link rel="stylesheet" href="cooking-interface.css">
 </head>
 <body>
+    <!-- Hidden checkboxes for state management (CSS-only) -->
+    <input type="checkbox" id="egg" class="ingredient-state" hidden>
+    <input type="checkbox" id="rice" class="ingredient-state" hidden>
+    <input type="checkbox" id="greenOnion" class="ingredient-state" hidden>
+    <input type="checkbox" id="oil" class="ingredient-state" hidden>
+    <input type="checkbox" id="reset" class="reset-state" hidden>
+
     <!-- Main Container -->
     <div class="container">
         <!-- Progress Bar -->
         <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
+            <div class="progress-fill"></div>
         </div>
 
-        <!-- Cooking Area (Wok Display) -->
-        <div class="cooking-area" id="cookingArea">
+        <!-- Cooking Area -->
+        <div class="cooking-area">
             <div class="wok-container">
-                <!-- Base wok image from kitchen textures -->
-                <img src="textures/kitchen1.png" alt="Wok" class="wok-image" id="wokImage">
-
-                <!-- Ingredient Overlays (appear when ingredients are added) -->
+                <img src="textures/kitchen1.png" alt="Wok" class="wok-image">
                 <img src="textures/kitchen2.png" alt="Ingredients" class="ingredient-overlay" id="overlay1">
                 <img src="textures/kitchen3.png" alt="More Ingredients" class="ingredient-overlay" id="overlay2">
             </div>
         </div>
 
-        <!-- Ingredients Panel (Right Side) -->
-        <div class="ingredients-panel" id="ingredientsPanel">
-            <button class="ingredient-button" id="eggBtn" data-ingredient="egg">
+        <!-- Ingredients Panel -->
+        <div class="ingredients-panel">
+            <label for="egg" class="ingredient-button">
                 <div style="font-size: 80px;">🥚</div>
-            </button>
-            <button class="ingredient-button" id="riceBtn" data-ingredient="rice">
+            </label>
+            <label for="rice" class="ingredient-button">
                 <div style="font-size: 80px;">🍚</div>
-            </button>
-            <button class="ingredient-button" id="greenOnionBtn" data-ingredient="greenOnion">
+            </label>
+            <label for="greenOnion" class="ingredient-button">
                 <div style="font-size: 80px;">🧅</div>
-            </button>
-            <button class="ingredient-button" id="oilBtn" data-ingredient="oil">
+            </label>
+            <label for="oil" class="ingredient-button">
                 <div style="font-size: 80px;">🛢️</div>
-            </button>
+            </label>
         </div>
 
-        <!-- Instruction Text (Bottom) -->
-        <div class="instruction-text" id="instructionText">
-            Click on the ingredients to add them to your wok! Start with egg 🥚
+        <!-- Instruction Text -->
+        <div class="instruction-text">
+            Click on ingredients to add them to your wok!
         </div>
 
-        <!-- Final Screen (Hidden until complete) -->
-        <div class="final-screen" id="finalScreen">
+        <!-- Final Screen -->
+        <div class="final-screen">
             <div class="final-image">
-                <img src="textures/kitchen2.png" alt="Finished Dish" id="finalDishImage">
+                <img src="textures/kitchen2.png" alt="Finished Dish">
             </div>
             <div class="final-title">DELICIOUS!</div>
-            <button class="reset-button" id="resetBtn">Cook Again</button>
+            <label for="reset" class="reset-button">Cook Again</label>
         </div>
     </div>
-
-    <script src="game.js"></script>
 </body>
 </html>
